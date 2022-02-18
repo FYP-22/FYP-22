@@ -1,18 +1,28 @@
 import os
 import subprocess
+from this import d
 import numpy as np
 
 #Current directory and file name:
 # apk_path = os.path.dirname(os.path.abspath(__file__));
 curpath = os.path.dirname(os.path.realpath(__file__))
 
-def convTonpy(binary_matrix, file_variant):
-  file_name = file_variant + '.npy'
+def convTonpy(binary_matrix, file_variant, file_type):
+  file_name = file_type + file_variant + '.npy'
   np.save(file_name, binary_matrix)
 
+
+def load_data(file_name):
   data = np.load(file_name)
-  print('printing loaded data')
-  print(data)
+  return data
+
+def create_y_files(dim, file_variant):
+  if(file_variant == 'ben'):
+    label = np.zeros((dim,))
+  else:
+    label = np.ones((dim,))
+  convTonpy(label, file_variant, 'y')
+
 
 def startExtracting(file_variant):
   all_app_permissions = []
@@ -86,6 +96,19 @@ writeIntoFile(mal_binary_matrix, 'mix_bin.json')
 writeIntoFile(ben_all_permissions, 'ben.json')
 writeIntoFile(mal_all_permissions, 'mal.json')
 
-convTonpy(ben_binary_matrix, 'ben');
-convTonpy(mal_binary_matrix, 'mal');
-convTonpy(mix_binary_matrix, 'mix');
+convTonpy(ben_binary_matrix, 'ben', 'x');
+convTonpy(mal_binary_matrix, 'mal', 'x');
+convTonpy(mix_binary_matrix, 'mix', 'x');
+
+print('data is: ', load_data('xben.npy').shape)   # (42, 67)
+print('data is: ', load_data('xmal.npy').shape)   # (1000, 166)
+print('data is: ', load_data('mix.npy').shape)   # (1042, 191)
+
+create_y_files(42, 'ben')
+create_y_files(1000, 'mal')
+
+print('data is: ', load_data('yben.npy').shape)   # (42,)
+print('data is: ', load_data('ymal.npy').shape)   # (100,)
+
+print('data is: ', load_data('ymal.npy'))   # (1042,)
+print('data is: ', load_data('yben.npy'))   # (42,)
