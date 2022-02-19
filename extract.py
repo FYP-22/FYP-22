@@ -82,8 +82,10 @@ def writeIntoFile(data, file_name):
 ben_uniq_feat, ben_all_permissions = startExtracting('ben')
 mal_uniq_feat, mal_all_permissions = startExtracting('mal')
 
-ben_binary_matrix = convertIntoBinaryMatrix(ben_uniq_feat, ben_all_permissions, 'ben')
-mal_binary_matrix = convertIntoBinaryMatrix(mal_uniq_feat, mal_all_permissions, 'mal')
+complete_uniq_feat = ben_uniq_feat | mal_uniq_feat;
+
+ben_binary_matrix = convertIntoBinaryMatrix(complete_uniq_feat, ben_all_permissions, 'ben')
+mal_binary_matrix = convertIntoBinaryMatrix(complete_uniq_feat, mal_all_permissions, 'mal')
 mix_binary_matrix = convertIntoBinaryMatrix(ben_uniq_feat | mal_uniq_feat, ben_all_permissions + mal_all_permissions, 'mix')
 
 print(len(ben_binary_matrix), len(ben_binary_matrix[0]))
@@ -100,23 +102,25 @@ convTonpy(ben_binary_matrix, 'ben', 'x');
 convTonpy(mal_binary_matrix, 'mal', 'x');
 convTonpy(mix_binary_matrix, 'mix', 'x');
 
-print('data is: ', load_data('xben.npy').shape)   # (42, 67)
-print('data is: ', load_data('xmal.npy').shape)   # (1000, 166)
-print('data is: ', load_data('mix.npy').shape)   # (1042, 191)
+print('data is: ', load_data('xben.npy').shape)
+print('data is: ', load_data('xmal.npy').shape)
+print('data is: ', load_data('mix.npy').shape)
 
-create_y_files(42, 'ben')
-create_y_files(1000, 'mal')
+# create_y_files(42, 'ben')
+# create_y_files(1000, 'mal')
 
-print('data is: ', load_data('yben.npy').shape)   # (42,)
-print('data is: ', load_data('ymal.npy').shape)   # (100,)
+print('data is: ', load_data('yben.npy').shape)
+print('data is: ', load_data('ymal.npy').shape)
 
-print('data is: ', load_data('ymal.npy'))   # (1042,)
-print('data is: ', load_data('yben.npy'))   # (42,)
+print('data is: ', load_data('ymal.npy'))
+print('data is: ', load_data('yben.npy'))
 
 xmal = mal_binary_matrix
-ymal = np.ones((42,))
+ymal = np.ones((len(mal_binary_matrix),))
 xben = ben_binary_matrix
-yben = np.zeros((1000,))
+yben = np.zeros((len(ben_binary_matrix),))
+
+print(len(xmal), len(ymal), len(xben), len(yben))
 
 # outfile = TemporaryFile()
 np.savez('data.npz', xben = xben, yben = yben, xmal = xmal, ymal = ymal)
