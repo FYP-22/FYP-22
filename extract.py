@@ -2,6 +2,7 @@ import os
 import subprocess
 from this import d
 import numpy as np
+from tempfile import TemporaryFile
 
 #Current directory and file name:
 # apk_path = os.path.dirname(os.path.abspath(__file__));
@@ -10,7 +11,6 @@ curpath = os.path.dirname(os.path.realpath(__file__))
 def convTonpy(binary_matrix, file_variant, file_type):
   file_name = file_type + file_variant + '.npy'
   np.save(file_name, binary_matrix)
-
 
 def load_data(file_name):
   data = np.load(file_name)
@@ -112,3 +112,11 @@ print('data is: ', load_data('ymal.npy').shape)   # (100,)
 
 print('data is: ', load_data('ymal.npy'))   # (1042,)
 print('data is: ', load_data('yben.npy'))   # (42,)
+
+xmal = mal_binary_matrix
+ymal = np.ones((42,))
+xben = ben_binary_matrix
+yben = np.zeros((1000,))
+
+# outfile = TemporaryFile()
+np.savez('data.npz', xben = xben, yben = yben, xmal = xmal, ymal = ymal)
